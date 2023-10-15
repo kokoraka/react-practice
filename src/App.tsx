@@ -7,19 +7,19 @@ export default function App(): React.ReactNode {
     <Cashflow items={[
       {
         description: "Beli daun meja kayu jati perhutani 140x70",
-        type: "credit",
+        type: "debit",
         amount: 1022500,
         date: new Date(1697130000000)
       },
       {
         description: "Cuan Deposito SeaBank 140jt 6% 3 bulan",
-        type: "debit",
+        type: "credit",
         amount: 1693808,
         date: new Date(1697216400000)
       },
       {
         description: "Bayar BPJS Kesehatan Kelas 1",
-        type: "credit",
+        type: "debit",
         amount: 153500,
         date: new Date(1697216400000)
       }
