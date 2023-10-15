@@ -26,6 +26,10 @@ export default function InputNumber(props: InputNumberProps): React.ReactNode {
 
   const [val, setValue] = React.useState(props.value)
 
+  React.useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
+  
   const handleOnInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value ? Number(e.target.value) : undefined
     setValue(value)

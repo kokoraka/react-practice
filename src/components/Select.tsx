@@ -26,6 +26,10 @@ export default function Select(props: SelectProps): React.ReactNode {
   const [val, setValue] = React.useState(props.value)
   const [items] = React.useState(props.items)
 
+  React.useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
+  
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
     setValue(value)

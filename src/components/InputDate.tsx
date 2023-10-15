@@ -26,6 +26,10 @@ export default function InputDate(props: InputDateProps): React.ReactNode {
 
   const [val, setValue] = React.useState(props.value)
 
+  React.useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
+  
   let dateVal: string
   if (val) {
     dateVal = val.toISOString().slice(0, 10)
