@@ -6,6 +6,7 @@ import Container from "../Container"
 import CashflowEdit, { SubmitMessage } from "./CashflowEdit"
 import CashflowItem, { ChangeMessage, RemoveMessage } from "./CashflowItem"
 import Modal from "../Modal"
+import ModalConfirm from "../ModalConfirm"
 import Money from "../../values/Money"
 
 type CashflowProps = {
@@ -28,6 +29,10 @@ export default function Cashflow(props: CashflowProps): React.ReactNode {
     date: new Date(),
   })
   const [modalNew, setModalNew] = React.useState(false)
+  const [modalDelete, setModalDelete] = React.useState({
+    open: false,
+    position: undefined as number | undefined,
+  })
 
   const handleOpenModalNew = () => {
     setModalNew(true)
@@ -84,7 +89,17 @@ export default function Cashflow(props: CashflowProps): React.ReactNode {
   }
 
   const handleRemoveItem = (m: RemoveMessage) => {
-    const updatedItems = items.filter((_, position) => position !== m.position)
+    setModalDelete((prevModal) => {
+      return {
+        ...prevModal,
+        open: true,
+        position: m.position,
+      }
+    })
+  }
+
+  const removeItem = (position: number) => {
+    const updatedItems = items.filter((_, idx) => idx !== position)
     setItems(updatedItems)
   }
 
@@ -147,6 +162,35 @@ export default function Cashflow(props: CashflowProps): React.ReactNode {
           )
         }}
       </Modal>
+
+      <ModalConfirm 
+        open={modalDelete.open} confirmLabel="Hapus"
+        onCancel={() => { 
+          setModalDelete((prevModal) => {
+            return {
+              ...prevModal,
+              open: false,
+            }
+          }) 
+        }}
+        onConfirm={() => {
+          removeItem(modalDelete.position)
+
+          setModalDelete((prevModal) => {
+            return {
+              ...prevModal,
+              open: false,
+            }
+          }) 
+        }}>
+        {{
+          body: (
+            <div>
+              Hapus data?
+            </div>
+          )
+        }}
+      </ModalConfirm>
     </>
   )
 
