@@ -1,8 +1,9 @@
 ### React Practice
 
 1. JSX (Javascript XML -> HTML)
-- .js working with javascript
-- .tsx working with typescript
+- format
+-- .js working with javascript
+-- .tsx working with typescript
 
 2. Components
 - props 
@@ -19,6 +20,22 @@
 - communication
 -- child to parent = events (simple callback function)
 
+- control
+-- uncontrolled (internal state not managed by react)
+-- controlled (internal state being manage by react -> state)
+
+- styles
+-- global
+-- local (styled component)
+
 3. Hooks
 - useState (component state)
 - useEffect (mounted event)
+- useRef (connection to real html dom) -> good for reading value
+
+4. Others
+- wrapper (avoid `div doup`)
+-- wrapper component
+-- react fragment (`<React.Fragment></React.Fragment>` or `<></>`)
+
+- portals (avoid bad html structure or real dom structure)
