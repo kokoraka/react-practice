@@ -56,7 +56,7 @@ export default function CashflowItem(props: CashflowItemProps): React.ReactNode 
        header: (
           <div className="row row-cols-12">
            <div className="col-lg-6 col-sm-12">
-            <Badge variant={props.cashflow.type === "credit" ? "danger" : "success"}>
+            <Badge variant={props.cashflow.type === "credit" ? "success" : "danger"}>
               {CashflowTypeLabel[props.cashflow.type]}
             </Badge>
            </div>
