@@ -1,4 +1,5 @@
 import * as React from "react"
+import Alert from "../Alert"
 import Button from "../Button"
 import ButtonGroup from "../ButtonGroup"
 import Container from "../Container"
@@ -97,6 +98,12 @@ export default function Cashflow(props: CashflowProps): React.ReactNode {
         <h1>Cashflow Statement</h1>
         <div>
           { 
+            items.length === 0 ?
+              <Alert variant="info">
+                <b>Belum ada cashflow</b>
+                <p>Silahkan tambahkan data terlebih dahulu</p>
+              </Alert>
+            :
             items.map((cashflow, i) => {
               return (
                 <CashflowItem 
