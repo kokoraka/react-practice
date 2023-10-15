@@ -29,18 +29,20 @@ export default function Cashflow(props: CashflowProps): React.ReactNode {
     date: new Date(),
   })
   const [modalNew, setModalNew] = React.useState(false)
+  const [modalUpdate, setModalUpdate] = React.useState({
+    open: false,
+    position: undefined as number | undefined,
+    cashflow: {
+      description: "",
+      amount: 0,
+      type: "",
+      date: new Date(),
+    }
+  })
   const [modalDelete, setModalDelete] = React.useState({
     open: false,
     position: undefined as number | undefined,
   })
-
-  const handleOpenModalNew = () => {
-    setModalNew(true)
-  }
-
-  const handleCloseModalNew = () => {
-    setModalNew(false)
-  }
 
   const handleAddItem = (m: SubmitMessage) => {
     if (!m.description) {
@@ -85,7 +87,73 @@ export default function Cashflow(props: CashflowProps): React.ReactNode {
   }
 
   const handleChangeItem = (m: ChangeMessage) => {
-    alert('TODO: CHANGE ITEM: ' + m.position)
+    const updatedItem = items.at(m.position)
+    if (updatedItem === undefined) {
+      return
+    }
+
+    setModalUpdate((prevModal) => {
+      return {
+        ...prevModal,
+        open: true,
+        position: m.position,
+        cashflow: {
+          description: updatedItem.description,
+          amount: updatedItem.amount,
+          type: updatedItem.type,
+          date: updatedItem.date
+        }
+      }
+    })
+  }
+
+  const handleUpdateItem = (m: SubmitMessage) => {
+    if (!m.description) {
+      alert("Deskripsi tidak valid")
+      return
+    }
+
+    if (!m.amount) {
+      alert("Nominal tidak valid")
+      return
+    }
+
+    if (!m.type) {
+      alert("Jenis tidak valid")
+      return
+    }
+
+    if (!m.date) {
+      alert("Tanggal tidak valid")
+      return
+    }
+
+    const updatedItem = {
+      description: m.description,
+      amount: m.amount,
+      type: m.type as "debit" | "credit",
+      date: m.date,
+    }
+    setItems((prevItems) => {
+      const updatedItems = prevItems.slice()
+      updatedItems[modalUpdate.position] = updatedItem
+      return [
+        ...updatedItems,
+      ]
+    })
+
+    setModalUpdate((prevModal) => {
+      return {
+        ...prevModal,
+        open: false,
+        cashflow: {
+          description: "",
+          amount: 0,
+          type: "",
+          date: new Date(),
+        }
+      }
+    })
   }
 
   const handleRemoveItem = (m: RemoveMessage) => {
@@ -141,24 +209,48 @@ export default function Cashflow(props: CashflowProps): React.ReactNode {
             <Button type="reset" variant="danger" onClick={handleClearItems}>
               Kosongkan
             </Button>
-            <Button variant="success" onClick={handleOpenModalNew}>
+            <Button variant="success" onClick={() => { setModalNew(true) }}>
               Tambah
             </Button>
           </ButtonGroup>
         </div>
       </Container>
 
-      <Modal open={modalNew} onClosed={handleCloseModalNew}>
+      <Modal open={modalNew} onClosed={() => { setModalNew(false) }}>
         {{
           header: (
             <h1 className="modal-title fs-5">Cashflow Info</h1>
           ),
           body: (
             <CashflowEdit 
-              id="cashflow-edit" 
+              id="cashflow-new" 
               submitLabel="Buat Baru"
               cashflow={cashflowNew} 
               onSubmit={handleAddItem} />
+          )
+        }}
+      </Modal>
+
+      <Modal 
+        open={modalUpdate.open} 
+        onClosed={() => {
+          setModalUpdate((prevModal) => {
+            return {
+              ...prevModal,
+              open: false,
+            }
+          }) 
+        }}>
+        {{
+          header: (
+            <h1 className="modal-title fs-5">Ubah Cashflow</h1>
+          ),
+          body: (
+            <CashflowEdit 
+              id="cashflow-edit" 
+              submitLabel="Simpan"
+              cashflow={modalUpdate.cashflow} 
+              onSubmit={handleUpdateItem} />
           )
         }}
       </Modal>
