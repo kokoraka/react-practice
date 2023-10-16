@@ -22,14 +22,23 @@ type InputDateProps = {
   onChange?: (m: ChangeMessage) => void,
 }
 
-export default function InputDate(props: InputDateProps): React.ReactNode {
+const InputDate = React.forwardRef((props: InputDateProps, ref: React.ForwardedRef<HTMLInputElement>): React.ReactNode => {
 
   const [val, setValue] = React.useState(props.value)
+  const inputRef = React.useRef<HTMLInputElement>()
 
   React.useEffect(() => {
     setValue(props.value)
   }, [props.value])
   
+  React.useImperativeHandle(ref, (): any => {
+    return {
+      focus: () => {
+        inputRef.current.focus()
+      }
+    }
+  })
+
   let dateVal: string
   if (val) {
     dateVal = val.toISOString().slice(0, 10)
@@ -53,6 +62,7 @@ export default function InputDate(props: InputDateProps): React.ReactNode {
 
   return (
     <input type="date" className="form-control"
+      ref={inputRef}
       value={dateVal} 
       id={props.id} 
       name={props.name} 
@@ -65,5 +75,6 @@ export default function InputDate(props: InputDateProps): React.ReactNode {
       onInput={handleOnInput}
       onChange={handleOnChange} />
   )
+})
 
-}
+export default InputDate
