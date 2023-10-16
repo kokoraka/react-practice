@@ -22,13 +22,22 @@ type InputTextProps = {
   onChange?: (m: ChangeMessage) => void,
 }
 
-export default function InputText(props: InputTextProps): React.ReactNode {
+const InputText = React.forwardRef((props: InputTextProps, ref: React.ForwardedRef<HTMLInputElement>): React.ReactNode => {
 
   const [val, setValue] = React.useState(props.value)
-  
+  const inputRef = React.useRef<HTMLInputElement>()
+
   React.useEffect(() => {
     setValue(props.value)
   }, [props.value])
+
+  React.useImperativeHandle(ref, (): any => {
+    return {
+      focus: () => {
+        inputRef.current.focus()
+      }
+    }
+  })
 
   const handleOnInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -48,6 +57,7 @@ export default function InputText(props: InputTextProps): React.ReactNode {
 
   return (
     <input type="text" className="form-control"
+      ref={inputRef}
       value={val}
       id={props.id} 
       name={props.name} 
@@ -60,5 +70,6 @@ export default function InputText(props: InputTextProps): React.ReactNode {
       onInput={handleOnInput}
       onChange={handleOnChange} />
   )
+})
 
-}
+export default InputText

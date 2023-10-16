@@ -22,13 +22,22 @@ type SelectItem = {
   label: string
 }
 
-export default function Select(props: SelectProps): React.ReactNode {
+const Select = React.forwardRef((props: SelectProps, ref: React.ForwardedRef<HTMLSelectElement>): React.ReactNode => {
   const [val, setValue] = React.useState(props.value)
   const [items] = React.useState(props.items)
+  const selectRef = React.useRef<HTMLSelectElement>()
 
   React.useEffect(() => {
     setValue(props.value)
   }, [props.value])
+
+  React.useImperativeHandle(ref, (): any => {
+    return {
+      focus: () => {
+        selectRef.current.focus()
+      }
+    }
+  })
   
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -42,7 +51,8 @@ export default function Select(props: SelectProps): React.ReactNode {
   }
 
   return (
-    <select className="form-select" 
+    <select className="form-select"
+      ref={selectRef} 
       value={val}
       id={props.id}
       name={props.name}
@@ -61,5 +71,6 @@ export default function Select(props: SelectProps): React.ReactNode {
       }
     </select>
   )
+})
 
-}
+export default Select
