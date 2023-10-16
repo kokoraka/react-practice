@@ -1,5 +1,6 @@
 ### React Practice
 
+#### Summary
 1. JSX (Javascript XML -> HTML)
 - format
 -- .js working with javascript
@@ -16,6 +17,7 @@
 -- usable only inside component
 -- initialized once and check existing state when re-rendered (state update)
 -- two way binding using state (value & listener handler)
+-- updated in batch if there are two setter being executed together (setA() -> setB() will batched behind the scene)
 
 - communication
 -- child to parent = events (simple callback function)
@@ -29,13 +31,27 @@
 -- local (styled component)
 
 - lifecycles
--- mounting (will mount -> render -> did mount)
--- updating (will receive props or set state -> should update ? -> will update -> re-render)
--- unmounting (will unmount)
+-- mounting
+--- componentWillMount
+--- render
+--- componentDidMount eq: useEffect(() => {  }, [])
+-- updating
+--- `will receive props` or `set state`
+--- componentShouldUpdate
+--- componentWillUpdate
+--- render (re-render)
+--- componentDidUpdate eq: useEffect(() => {  }, [stateA])
+-- unmounting
+--- componentWillUnmount eq: useEffect(() => { return () => {...} }, [])
+-- error
+--- componentDidCatch
+
+- re-evaluate the component doesn't meant re-render the actual dom
 
 3. Hooks
 only usable on component or custom hooks
 should be called on the top level (not inside other function or inside a branching statement)
+can only be used on functional components (not class based components)
 
 - useState (component state)
 - useRef (connection to real html dom) -> good for reading value
@@ -52,6 +68,10 @@ should be called on the top level (not inside other function or inside a branchi
 -- wanted to use the last state snapshot
 -- avoid depending on other outdated state
 - useContext (make it easy to working with context -> no need context provider)
+- useCallback (singleton for function so the function is not re-created everytime the component being re-evaluated)
+-- without dependency -> []
+-- with dependency -> [someState]
+- useMemo (same like useCallback but for state)
 
 4. Others
 - wrapper (avoid `div doup`)
@@ -79,7 +99,7 @@ should be called on the top level (not inside other function or inside a branchi
   </AuthContext.Consumer>
 ```
 
--- or use through useContext hooks
+-- or use through useContext hooks (can consume multiple context)
 
 ```js
   import AuthContext from "./store/AuthContext"
@@ -89,3 +109,10 @@ should be called on the top level (not inside other function or inside a branchi
   authCtx.key
 
 ```
+
+- optimization 
+-- react memo 
+--- by default only work component function (not class based)
+--- only render component when the previous props are different than the new props
+--- props are compared using `===` operator, therefore primitive value (string, number, boolean, etc) is behave differently than non-primitive value (object, array, function, etc)
+--- the cost of comparing the props should be considered vs the cost of re-evaluating the component
